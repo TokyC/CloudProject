@@ -109,7 +109,7 @@ def ETLtoS3() :
         "total_post":total_post
     }
 
-    json_response = json.dumps(KPI, indent=4)
+    json_response = json.dumps(KPI)
 
 
 
