@@ -23,7 +23,7 @@ def saveProfileIG():
     # loadindb
     print("Here")
     cnx = mysql.connector.connect(user='instagram', password='instagram',
-                                  host='database-1.cc0puuedo7ac.us-east-2.rds.amazonaws.com',
+                                  host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
                                   database='instagram_data')
     print("here2")
     file_name = "cedric_andriam"
