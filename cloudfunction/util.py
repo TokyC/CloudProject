@@ -44,7 +44,7 @@ def createItemImage(item) :
 def saveJsonToDB(data, cnx) :
     content = data["GraphImages"]
 
-    add_content = ("INSERT INTO data_ig (user_name, url, comments_is_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_view)"
+    add_content = ("INSERT INTO data_ig (user_name, url, comment_is_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_views)"
                    " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)")
 
     for item in content:
