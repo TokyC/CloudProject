@@ -1,8 +1,10 @@
 import io
 import json
+from pprint import pprint
+import instagram_scraper
 
 import mysql.connector
-from flask import Flask
+from flask import Flask, request
 
 from cloudfunction.util import loadJsonFromS3, saveJsonToDB
 from secrets import aws_secret_access_key, aws_access_key_id
@@ -16,50 +18,54 @@ app = Flask(__name__)
 def hello_world() :  # put application's code here
     return 'Hello World!'
 
+# @app.route('/test_scrap')
+# def test_scrap() :  # put application's code here
+#     name = request.args.get("username")
+#     print(name)
+#     args = {"login_user":"vectorwild","login_pass":"011298Vector"}
+#     insta_scraper = instagram_scraper.InstagramScraper(**args)
+#     insta_scraper.authenticate_with_login()
+#     shared_data = insta_scraper.get_shared_data_userinfo(username=name)
+#
+#     arr = []
+#
+#     for item in insta_scraper.query_media_gen(shared_data) :
+#         arr.append(item)
+#
+#     pprint(type(arr[0]))
+#     return 'Hello World!'
+
+
 @app.route('/saveProfileIG')
 def saveProfileIG():
     # save
     # recup
     # loadindb
-    print("Here")
     cnx = mysql.connector.connect(user='admin', password='awsproject',
                                   host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
                                   database='instagram_data')
-    print("here2")
-    file_name = "cedric_andriam"
-    response = loadJsonFromS3(file_name)
-    response = json.loads(response)
-    res = saveJsonToDB(response, cnx)
-    return res
+    name = request.args.get("username")
+    print(name)
+    args = {"login_user" : "vectorwild", "login_pass" : "011298Vector"}
+    insta_scrapper = instagram_scraper.InstagramScraper(**args)
+    insta_scrapper.authenticate_with_login()
+    shared_data = insta_scrapper.get_shared_data_userinfo(username=name)
+    arr = []
 
-@app.route('/S3toRDS')
+    for item in insta_scrapper.query_media_gen(shared_data) :
+        arr.append(item)
+
+    res = saveJsonToDB(arr, cnx)
+    return name + " Saved. " + res
+
+@app.route('/ETLtoS3')
 def S3toRDS() :
     cnx = mysql.connector.connect(user='admin', password='awsproject',
                                   host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
                                   database='project')
-    client = boto3.client('s3',
-                          aws_access_key_id=aws_access_key_id,
-                          aws_secret_access_key=aws_secret_access_key)
-    s3_object = client.get_object(Bucket='tokyaws', Key='AWS_project.csv')
-    body = s3_object['Body']
-    response = body.read().decode("utf-8")
-    data = io.StringIO(response)
-    df = pd.read_csv(data, sep=";", header=0)
-    print(df.head())
-    print(df.columns)
-    add_matiere = ("INSERT INTO matiere (matiere, description, nbheure) VALUES (%s,%s,%s)")
-    try :
-        cursor = cnx.cursor()
-        print("Insert all from csv")
-        for i in df.index :
-            new_matiere = (df["Matière"][i], df["Description"][i], int(df[" Nb heure"][i]))
-            print(new_matiere)
-            cursor.execute(add_matiere, new_matiere)
-    finally :
-        cnx.commit()
-        cursor.close()
-        cnx.close()
-    return response
+
+
+    return "response"
 
 
 # @app.route('/RDStoS3')

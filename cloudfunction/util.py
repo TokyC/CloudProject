@@ -41,13 +41,13 @@ def createItemImage(item) :
     return new_image
 
 
-def saveJsonToDB(data, cnx) :
-    content = data["GraphImages"]
+def saveJsonToDB(content, cnx) :
 
     add_content = ("INSERT INTO data_ig (user_name, url, comment_is_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_views)"
                    " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-
+    i = 1
     for item in content:
+        print("Status :" + i + "/" + len(content))
         if item["is_video"] == True:
             add_video = createItemVideo(item)
             try:
@@ -62,13 +62,13 @@ def saveJsonToDB(data, cnx) :
             add_image = createItemImage(item)
             try:
                 cursor = cnx.cursor()
-                print("Insert a video")
+                print("Insert an Image")
                 cursor.execute(add_content, add_image)
             finally :
                 cnx.commit()
                 cursor.close()
                 cnx.close()
-        break
+        i += 1
 
 
     return "Done"

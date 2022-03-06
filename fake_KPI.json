@@ -1,0 +1,10 @@
+{
+  "minLike": 2,
+  "maxLike": 100,
+  "averageLike": 51,
+  "minComment": 2,
+  "maxComment": 100,
+  "averageComment": 51,
+  "totalLike": 1983,
+  "toalPost": 50000
+}
