@@ -21,9 +21,9 @@ def saveProfileIG():
     # save
     # recup
     # loadindb
-    cnx = mysql.connector.connect(user='admin', password='awsproject',
-                                  host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
-                                  database='project')
+    cnx = mysql.connector.connect(user='instagram', password='instagram',
+                                  host='database-1.cc0puuedo7ac.us-east-2.rds.amazonaws.com',
+                                  database='instagram_data')
     file_name = "cedric_andriam"
     response = loadJsonFromS3(file_name)
     response = json.loads(response)
