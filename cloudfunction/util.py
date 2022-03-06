@@ -24,8 +24,9 @@ def createItemVideo(item) :
     nb_tags = len(item["tags"])
     comments_disabled = item["comments_disabled"]
     description = item["edge_media_to_caption"]["edges"][0]["node"]["text"]
-    new_video = (user_name, url,comments_disabled,description, nb_like, nb_comment, is_video, nb_tags, nb_view)
+    new_video = (user_name, url, comments_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_view)
     return new_video
+
 
 def createItemImage(item) :
     user_name = item["username"]
@@ -37,38 +38,34 @@ def createItemImage(item) :
     nb_tags = len(item["tags"])
     comments_disabled = item["comments_disabled"]
     description = item["edge_media_to_caption"]["edges"][0]["node"]["text"]
-    new_image = (user_name, url,comments_disabled,description, nb_like, nb_comment, is_video, nb_tags, nb_view)
+    new_image = (user_name, url, comments_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_view)
     return new_image
 
 
-def saveJsonToDB(data,  cnx) :
+def saveJsonToDB(data, cnx) :
     content = data["GraphImages"]
-    add_content = ("INSERT INTO data_ig (user_name, url, comment_is_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_views)"
-                   " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)")
-    i = 1
-    for item in content:
-        print("Here")
-        if item["is_video"] == True:
-            add_video = createItemVideo(item)
-            try:
+    add_content = (
+        "INSERT INTO data_ig (user_name, url, comment_is_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_views)"
+        " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+    try :
+        for item in content :
+            print("Here")
+            if item["is_video"] == True :
+                add_video = createItemVideo(item)
+
                 cursor = cnx.cursor()
                 print("Insert a video")
                 cursor.execute(add_content, add_video)
-            finally :
-                cnx.commit()
-                cursor.close()
-                cnx.close()
-        else:
+        else :
             add_image = createItemImage(item)
-            try:
-                cursor = cnx.cursor()
-                print("Insert an Image")
-                cursor.execute(add_content, add_image)
-            finally :
-                cnx.commit()
-                cursor.close()
-                cnx.close()
-        i += 1
+            cursor = cnx.cursor()
+            print("Insert an Image")
+            cursor.execute(add_content, add_image)
+
+    finally :
+        cnx.commit()
+        cursor.close()
+        cnx.close()
 
 
     return "Done"
