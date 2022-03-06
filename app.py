@@ -44,17 +44,23 @@ def saveProfileIG():
     cnx = mysql.connector.connect(user='admin', password='awsproject',
                                   host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
                                   database='instagram_data')
-    name = request.args.get("username")
-    args = {"login_user" : "vectorwild", "login_pass" : "011298Vector"}
-    insta_scrapper = instagram_scraper.InstagramScraper(**args)
-    insta_scrapper.authenticate_with_login()
-    shared_data = insta_scrapper.get_shared_data_userinfo(username=name)
-    arr = []
+    # name = request.args.get("username")
+    # args = {"login_user" : "vectorwild", "login_pass" : "011298Vector"}
+    # insta_scrapper = instagram_scraper.InstagramScraper(**args)
+    # insta_scrapper.authenticate_with_login()
+    # shared_data = insta_scrapper.get_shared_data_userinfo(username=name)
+    # arr = []
+    #
+    # for item in insta_scrapper.query_media_gen(shared_data) :
+    #     arr.append(item)
+    #
+    # res = saveJsonToDB(arr, name, cnx)
+    file_name = "cedric_andriam"
+    response = loadJsonFromS3(file_name)
+    response = json.loads(response)
+    res = saveJsonToDB(response, cnx)
+    return res
 
-    for item in insta_scrapper.query_media_gen(shared_data) :
-        arr.append(item)
-
-    res = saveJsonToDB(arr, name, cnx)
     return name + " Saved. " + res
 
 @app.route('/ETLtoS3')
