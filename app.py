@@ -4,7 +4,7 @@ from pprint import pprint
 import instagram_scraper
 
 import mysql.connector
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 from cloudfunction.util import loadJsonFromS3, saveJsonToDB
 from secrets import aws_secret_access_key, aws_access_key_id
@@ -114,7 +114,7 @@ def ETLtoS3() :
 
 
 
-    return json_response
+    return jsonify(json_response)
 
 
 if __name__ == '__main__' :
