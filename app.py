@@ -27,7 +27,7 @@ def hello_world() :
     # creating a DataFrame object
     df = pd.DataFrame(data, index=['a', 'b', 'c', 'd', 'e'],
                       columns=['x', 'y', 'z'])
-    print(len(df.index))
+    print(type(df["x"].mean()))
     return 'Hello World!'
 
 # @app.route('/test_scrap')
@@ -86,15 +86,15 @@ def ETLtoS3() :
         cnx.close()
 
     username = df["user_name"][0]
-    min_like = df["nb_like"].min()
-    max_like =df["nb_like"].max()
-    min_comment = df["nb_comment"].min()
-    max_comment =df["nb_comment"].max()
-    average_like =df["nb_like"].mean()
+    min_like = int(df["nb_like"].min())
+    max_like = int(df["nb_like"].max())
+    min_comment = int(df["nb_comment"].min())
+    max_comment = int(df["nb_comment"].max())
+    average_like = df["nb_like"].mean()
     average_comment=df["nb_comment"].mean()
-    total_like= df["nb_like"].sum()
-    total_comment=df["nb_comment"].sum()
-    total_post=len(df.index)
+    total_like= int(df["nb_like"].sum())
+    total_comment= int(df["nb_comment"].sum())
+    total_post= int(len(df.index))
 
     KPI = {
         "Nom utilisateur" : username,
