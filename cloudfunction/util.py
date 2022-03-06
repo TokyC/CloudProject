@@ -14,8 +14,8 @@ def loadJsonFromS3(file_name) :
     return response
 
 
-def createItemVideo(item) :
-    user_name = item["username"]
+def createItemVideo(item, name) :
+    user_name = name
     url = item["display_url"]
     nb_like = item["edge_media_preview_like"]["count"]
     nb_view = item["video_view_count"]
@@ -27,8 +27,8 @@ def createItemVideo(item) :
     new_video = (user_name, url,comments_disabled,description, nb_like, nb_comment, is_video, nb_tags, nb_view)
     return new_video
 
-def createItemImage(item) :
-    user_name = item["username"]
+def createItemImage(item, name) :
+    user_name = name
     url = item["display_url"]
     nb_like = item["edge_media_preview_like"]["count"]
     nb_view = item["edge_media_preview_like"]["count"]
@@ -41,7 +41,7 @@ def createItemImage(item) :
     return new_image
 
 
-def saveJsonToDB(content, cnx) :
+def saveJsonToDB(content, name,  cnx) :
 
     add_content = ("INSERT INTO data_ig (user_name, url, comment_is_disabled, description, nb_like, nb_comment, is_video, nb_tags, nb_views)"
                    " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)")
@@ -49,7 +49,7 @@ def saveJsonToDB(content, cnx) :
     for item in content:
         print("Status :" + str(i) + "/" + str(len(content)))
         if item["is_video"] == True:
-            add_video = createItemVideo(item)
+            add_video = createItemVideo(item, name)
             try:
                 cursor = cnx.cursor()
                 print("Insert a video")
@@ -59,7 +59,7 @@ def saveJsonToDB(content, cnx) :
                 cursor.close()
                 cnx.close()
         else:
-            add_image = createItemImage(item)
+            add_image = createItemImage(item, name)
             try:
                 cursor = cnx.cursor()
                 print("Insert an Image")

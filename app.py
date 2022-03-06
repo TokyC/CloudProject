@@ -32,8 +32,8 @@ def hello_world() :  # put application's code here
 #     for item in insta_scraper.query_media_gen(shared_data) :
 #         arr.append(item)
 #
-#     pprint(type(arr[0]))
-#     return 'Hello World!'
+#     pprint(arr[0])
+#     return arr[0]
 
 
 @app.route('/saveProfileIG')
@@ -45,7 +45,6 @@ def saveProfileIG():
                                   host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
                                   database='instagram_data')
     name = request.args.get("username")
-    print(name)
     args = {"login_user" : "vectorwild", "login_pass" : "011298Vector"}
     insta_scrapper = instagram_scraper.InstagramScraper(**args)
     insta_scrapper.authenticate_with_login()
@@ -55,7 +54,7 @@ def saveProfileIG():
     for item in insta_scrapper.query_media_gen(shared_data) :
         arr.append(item)
 
-    res = saveJsonToDB(arr, cnx)
+    res = saveJsonToDB(arr, name, cnx)
     return name + " Saved. " + res
 
 @app.route('/ETLtoS3')
