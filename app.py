@@ -85,7 +85,7 @@ def ETLtoS3() :
         cnx.commit()
         cnx.close()
 
-    username = df["username"][0]
+    username = df["user_name"][0]
     min_like = df["nb_like"].min()
     max_like =df["nb_like"].max()
     min_comment = df["nb_comment"].min()
