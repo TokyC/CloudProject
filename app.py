@@ -15,7 +15,19 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def hello_world() :  # put application's code here
+def hello_world() :
+    data = [
+        (20, 16, 23),
+        (30, None, 11),
+        (40, 34, 11),
+        (50, 35, None),
+        (60, 40, 13)
+    ]
+
+    # creating a DataFrame object
+    df = pd.DataFrame(data, index=['a', 'b', 'c', 'd', 'e'],
+                      columns=['x', 'y', 'z'])
+    print(len(df.index))
     return 'Hello World!'
 
 # @app.route('/test_scrap')
@@ -38,9 +50,7 @@ def hello_world() :  # put application's code here
 
 @app.route('/saveProfileIG')
 def saveProfileIG():
-    # save
-    # recup
-    # loadindb
+
     cnx = mysql.connector.connect(user='admin', password='awsproject',
                                   host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
                                   database='instagram_data')
@@ -53,28 +63,58 @@ def saveProfileIG():
 
     for item in insta_scrapper.query_media_gen(shared_data) :
         arr.append(item)
-    #
-    # res = saveJsonToDB(arr, name, cnx)
+
     name = request.args.get("username")
-    # response = loadJsonFromS3(file_name)
-    # response = json.loads(response)
     res = saveJsonToDB(arr, name, cnx)
     return res
 
     return name + " Saved. " + res
 
 @app.route('/ETLtoS3')
-def S3toRDS() :
+def ETLtoS3() :
     cnx = mysql.connector.connect(user='admin', password='awsproject',
                                   host='mysql-project.clgag50aevk1.eu-west-3.rds.amazonaws.com',
-                                  database='project')
+                                  database='instagram_data')
+    client = boto3.client('s3',
+                          aws_access_key_id=aws_access_key_id,
+                          aws_secret_access_key=aws_secret_access_key)
+    query = "SELECT * FROM data_ig WHERE user_name = \"" + request.args.get("username") + "\""
+    try :
+        df = pd.read_sql(query, con=cnx)
+    finally :
+        cnx.commit()
+        cnx.close()
+
+    username = df["username"][0]
+    min_like = df["nb_like"].min()
+    max_like =df["nb_like"].max()
+    min_comment = df["nb_comment"].min()
+    max_comment =df["nb_comment"].max()
+    average_like =df["nb_like"].mean()
+    average_comment=df["nb_comment"].mean()
+    total_like= df["nb_like"].sum()
+    total_comment=df["nb_comment"].sum()
+    total_post=len(df.index)
+
+    KPI = {
+        "Nom utilisateur" : username,
+        "min_like" : min_like,
+        "max_like":max_like,
+        "min_comment":min_comment,
+        "max_comment":max_comment,
+        "average_like":average_like,
+        "average_comment":average_comment,
+        "total_like":total_like,
+        "total_comment":total_comment,
+        "total_post":total_post
+    }
+
+    json_response = json.dumps(KPI, indent=4)
 
 
-    return "response"
 
 
-# @app.route('/RDStoS3')
-# def RDStoS3() :
+    return json_response
 
 
 if __name__ == '__main__' :

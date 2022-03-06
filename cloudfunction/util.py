@@ -49,7 +49,6 @@ def saveJsonToDB(content,name, cnx) :
         " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)")
     try :
         for item in content :
-            print("Here")
             if item["is_video"] == True :
                 add_video = createItemVideo(item, name)
 
