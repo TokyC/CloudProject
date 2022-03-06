@@ -110,9 +110,8 @@ def ETLtoS3() :
     }
 
     json_response = json.dumps(KPI)
-
-
-
+    key = username + ".json"
+    client.put_object(Body=json_response, Bucket='tokyaws', Key= key)
 
     return jsonify(json_response)
 
